@@ -6,7 +6,7 @@
 ## 1、[操作系统引论](doc/Introduction.md)
 
 
-## 2、进程管理
+## 2、[进程管理](doc/Process.md)
 
 
 ## 3、处理机调度和死锁
