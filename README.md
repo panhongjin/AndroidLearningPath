@@ -6,7 +6,7 @@
 ## 一、[计算机操作系统](src/OperatingSystems)
 
 ### 1、[操作系统引论](src/OperatingSystems/doc/Introduction.md)
-### 2、进程管理
+### 2、[进程管理](src/OperatingSystems/doc/Process.md)
 ### 3、处理机调度和死锁
 ### 4、存储器管理
 ### 5、设备管理
