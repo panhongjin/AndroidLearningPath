@@ -134,6 +134,32 @@
 
 ### 2.2.1 进程的创建
 
+1. 进程图(Process Graph)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/进程树.JPG)<br>
+
+2. 引起创建进程的事件<br>
+1) 用户登录；
+2) 作业调度；
+3) 提供服务；
+4) 应用请求。<br>
+
+3. 进程的创建(Creation of Progress)<br>
+1) 申请空白PCB；
+2) 为新进程分配资源；
+3) 初始化进程控制块；
+4) 将新进程插入就绪队列，如果进程就绪队列能够接纳新进程，便将新进程插入就绪队列。<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/进程创建原语.JPG)<br>
+
+### 2.2.2 进程的终止
+
+1. 引起进程终止(Termination of Process)的事件<br>
+1) 正常结束<br>
+&emsp;&emsp;在任何计算机系统中，都应有一个用于表示进程已经运行完成的指示。例如，在批处理系统中，通常在程序的最后安排一条Halt指令或终止的系统调用。当程序运行到Halt指令时，将产生一个中断，去通知OS本进程已经完成。在分时系统中，用户可利用Logs off去表示进程运行完毕，此时同样可产生一个中断，去通知OS进程已运行完毕。<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/进程停止原语.JPG)<br>
+2) 异常结束<br>
+&emsp;&emsp;在进程运行期间，由于出现某些错误和故障而迫使进程终止这类异常事件很多，常见的有：a、越界错误。这是指程序所访问的存储区，已越出该进程的区域；b、保护错。进程试图去访问一个不允许访问的资源或文件，或者以不适当的方式进行访问，例如，进程试图去写一个只读文件；c、非法指令。程序试图去执行一条不存在的指令。出现该错误的原因，可能是程序错误地转移到数据区，把数据当成了指令；d、特权指令错。用户进程试图去执行一条只允许OS执行的指令；e、运行超时。进程的执行时间超过了指定的最大值；f、等待超时。进程等待某事件的时间，超过了规定的最大值；g、算术运算错误。进程试图去执行一个被禁止的运算，例如，被0除；h、I/O故障。这是指在I/O过程中发生了错误等。<br>
+3) 外界干预<br>
+&emsp;&emsp;外界干预并非指在本进程运行中出现了异常事件，而是指进程应外界的请求而终止运行。这些干预有：a、操作员或操作系统干预。由于某种原因，例如，发生了死锁，由操作员或操作系统终止该进程；b、父进程请求。由于父进程具有终止自己的任何子孙进程的权利，因而当父进程提出请求时，系统将终止该进程；c、父进程终止。当父进程终止时，OS也将他的所有子孙进程终止。<br>
 
 
 
