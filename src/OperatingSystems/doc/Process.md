@@ -286,8 +286,7 @@ S.value > 0：表示可供使用资源数；= 0：表示资源已被占用，无
 3. 利用信号量机制实现进程同步<br>
 &emsp;&emsp;利用信号量能解决进程间的同步问题，这里以下图所示的计算进程C和打印进程P通过缓冲区Buffer传送数据的同步问题为例说明。<br>
 ![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/利用信号量机制实现进程同步示例.JPG)<br>
-![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/利用信号量机制实现进程同步示例.JPG)<br>
-C和P两进程基本算法如下：
+C和P两进程基本算法如下：<br>
 ![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/计算打印算法原语.JPG)<br>
 C和P两进程并发执行，必须在执行序列上遵循以下规则，才能避免错误。<br>
 &emsp;&emsp;只有当C进程把数据送入Buffer后，P进程才能从Buffer中取出数据来打印，否则P进程只能等待。
