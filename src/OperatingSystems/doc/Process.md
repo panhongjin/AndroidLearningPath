@@ -251,17 +251,123 @@
 2. 记录型信号量<br>
 &emsp;&emsp;在整型信号量机制中的wait操作，只要信号量S<=0，就会不断地测试。因此，该机制并未遵循“让权等待”的准则，而是使进程处于“忙等”的状态记录型信号量机制，则是一种不存在“忙等”现象的进程同步机制。但在采取了“让权等待”的策略后，又会出现多个进程等待访问同一临界资源的情况。为此，在信号量机制中，除了需要一个用于代表资源数目的整型变量value外，还应增加一个进程链表L，用于链接上述的所有等待进程。记录型信号量是由于它采用了记录型的数据结构而得名的。它所包含的上述两个数据项可描述为：<br>
 ![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/记录型信号量原语.JPG)<br>
-1) 信号量的类型<br>
+- 信号量的类型<br>
 &emsp;&emsp;信号量按联系进程的关系分成两类：
 - 公用信号量(互斥信号量)： 它为一组需互斥共享临界资源的并发进程而设置，它代表永久的共享的临界资源，每个进程均可对它施加P、V操作，即都可申请和释放该临界资源，其初始值置为1。<br>
 - 专用信号量(同步信号量)： 它为一组需同步协作完成任务的并发进程而设置，它代表消耗性的专用资源，只有拥有该资源的进程才能对它施加P操作(即可申请资源)，而由其合作进程对它施加V操作(即释放资源)。
-2) 信号量S取值意义<br>
+- 信号量S取值意义<br>
 S.value > 0：表示可供使用资源数；= 0：表示资源已被占用，无其他进程等待；< 0(= -n)：表示资源已被占用，还有n个进程因等待资源而阻塞。<br>
 ![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/信号量保护共享数据示例.JPG)<br>
+3. AND型信号量<br>
+在两个进程中都要包含两个对Dmutex和Emutex的操作，即<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/AND型信号量.JPG)<br>
+&emsp;&emsp;AND同步机制的基本思想是：将进程在整个运行过程中需要的所有资源，一次性全部地分配给进程，待进程使用完后再一起释放。只要尚有一个资源未能分配给进程，其它所有可能为之分配的资源，也不分配给它。亦即，对若干个临界资源的分配，采取原子操作方式：要么全部分配到进程，要么一个也不分配。由死锁理论可知，这样就可避免上述死锁情况的发生。为此，在wait操作中，增加了一个"AND"条件，故称为AND同步，或称为同时wait操作，即Swait(Simultaneous wait)定义如下：<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/AND型信号量原语.JPG)<br>
+4. 信号量集<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/信号量集原语.JPG)<br>
+&emsp;&emsp;一般“信号量集”的几种特殊情况：
+- Swait(S, d, d)。此时在信号量集中只有一个信号量S，但允许它每次申请d个资源，当现有资源数少于d时，不予分配。
+- Swait(S， 1, 1)。此时的信号量集已蜕化为一般的记录型信号量(S > 1时)或互斥信号量(S = 1时)。
+- Swait(S， 1， 0)。这是一种很特殊且很有用的信号量操作。当S>=1时，允许多个进程进入某特定区；当S变为0后，将阻止任何进程进入特定区。换言之，它相当于一个可控开关。
+
+### 2.3.3 信号量的应用
+
+1. 利用信号量实现进程互斥<br>
+利用信号量实现进程互斥的进程可描述如下：<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/利用信号量实现进程互斥原语.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/利用信号量实现进程互斥原语1.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/利用信号量机制实现进程互斥示例.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/利用信号量机制实现进程互斥表.JPG)<br>
+
+2. 利用信号量实现前趋关系<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/利用信号量实现前趋关系.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/利用信号量实现前趋关系原语.JPG)<br>
+
+3. 利用信号量机制实现进程同步<br>
+&emsp;&emsp;利用信号量能解决进程间的同步问题，这里以下图所示的计算进程C和打印进程P通过缓冲区Buffer传送数据的同步问题为例说明。<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/利用信号量机制实现进程同步示例.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/利用信号量机制实现进程同步示例.JPG)<br>
+C和P两进程基本算法如下：
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/计算打印算法原语.JPG)<br>
+C和P两进程并发执行，必须在执行序列上遵循以下规则，才能避免错误。<br>
+&emsp;&emsp;只有当C进程把数据送入Buffer后，P进程才能从Buffer中取出数据来打印，否则P进程只能等待。
+&emsp;&emsp;只有当P进程从Buffer中取走数据后，C进程才能将新计算的数据再存入Buffer，否则C进程也只能等待。<br>
+&emsp;&emsp;为了实现进程同步，需采用同步信号量。为了满足第一条同步规则：只有当C进程把数据送入Buffer后，P进程才能从Buffer中取出数据来打印。设置一个同步信号量full，它代表的消耗性的专用资源是缓冲器装满数据，这个资源只是后面动作(Remove from buffer)的进程(P进程)所拥有，P进程在动作前可以申请该资源，对它施加P操作，如条件满足P进程可从Buffer中取数，它的初值为0。而前面动作的进程(P进程的合作进程C)在动作(Add to Buffer)完成后对full信号量施加V操作，即当C进程将数据存入Buffer后，即可释放该资源供P进程再使用。<br>
+&emsp;&emsp;实现C和P两进程第一条同步规则的类PASCAL程序：<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/计算打印full信号量程序.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/计算打印full信号量程序表.JPG)<br>
+&emsp;&emsp;为了满足第二条同步规则：只有当P进程从Buffer中取走数据后，C进程才能将新计算的数据再存入Buffer。设置另一个同步信号量empty，它代表的消耗性的专用资源是缓冲器空，这个资源只是后面动作(Add to buffer)的进程(C进程)所拥有，C进程在动作前可以申请该资源，它的初值为1。而前面动作(Remove from buffer)的进程(C进程的合作进程P)在动作完成后对empty信号量施加V操作，即当P进程从Buffer中取走数据后，即可释放该资源供C进程再使用。<br>
+&emsp;&emsp;实现C和P两进程第二条同步规则的类PASCAL程序：<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/计算打印empty信号量程序.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/计算打印full和empty信号量程序.JPG)<br>
+
+同步物理意义<br>
+&emsp;&emsp;同步也可以理解为：先做动作的进程C在动作完成后对同步信号量施加V操作，代表发送消息；后做动作的进程P在动作前对同步信号量施加P操作，代表测试消息是否到达。<br>
 
 
+## 2.4 经典进程同步问题
 
+&emsp;&emsp;经典进程同步问题是从进程并发执行中归纳的典型例子，这些问题常用来测试新的进程同步机制可行性。主要的经典同步问题有生产者-消费者、读者-写者问题、哲学家进餐问题等。
 
+### 2.4.1 生产者-消费者问题(producer-consumer Problem)
+
+- 生产者-消费者问题是著名的同步问题，它描述一组生产者(P1, ...... , Pm)向一组消费者(C1, ...... , Cq)提供消息。它们共享一个有界缓冲池(bounded buffer pool)，生产者向其中投放消息，消费者从中取得消息，如下图所示。生产者-消费者问题是许多相互合作进程的一种抽象。<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题.JPG)<br>
+&emsp;&emsp;假定缓冲池中有n个缓冲区，每个缓冲区存放一个消息。由于缓冲池是临界资源，它只允许一个生产者投入消息，或者一个消费者从中取出消息。即生产者之间、生产者与消费者之间、消费者之间都必须互斥使用缓冲池。所以必须设置互斥信号量mutex，它代表缓冲池资源，它的数值为1。<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题原语.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题原语1.JPG)<br>
+&emsp;&emsp;与计算打印两进程同步关系相同，生产者和消费者二类进程P和C之间应满足下列二个同步条件：<br>
+- 只有在缓冲池中至少有一个缓冲区已存入消息后，消费者才能从中提取消息，否则消费者必须等待。
+- 只有缓冲池中至少有一个缓冲区是空时，生产者才能把消息放入缓冲区，否则生产者必须等待。<br>
+&emsp;&emsp;为了满足第一条同步规则：只有在缓冲池中至少有一个缓冲区已存入消息后，消费者才能从中提取消息。设置一个同步信号量full，它代表的消耗性的专用资源是缓冲器装满数据，这个资源只是后面动作的进程(消费者进程C)所拥有，C进程在动作前可以申请该资源，对它施加P操作，如条件满足C进程可从Buffer中取数，它的初值为0。而前面动作的进程(C进程的合作进程生产者进程P)在动作完成后对full信号量施加V操作，即当P进程将数据存入Buffer后，即可释放该资源供消费者进程C再使用。<br>
+&emsp;&emsp;为了满足第一条同步规则：只有缓冲池中至少有一个缓冲区是空时，生产者才能把消息放入缓冲区。设置另一个同步信号量empty，它代表的消耗性的专用资源是缓冲器空，这个资源只是后面动作的进程(生产者进程P)所拥有，P进程在动作前可申请该资源，对它施加P操作，如条件满足进程P可以申请该资源，它的初值为n。而前面动作的进程(生产者进程P的合作进程消费者进程C)在动作完成后对empty信号量施加V操作，即当消费者进程C从Buffer中取走数据后，即可释放该资源供生产者进程P再使用。<br>
+&emsp;&emsp;用类并行PASCAL语言和信号量机制解生产者-消费者问题程序：<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题程序.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题程序1.JPG)<br>
+进程同步的分析：<br>
+&emsp;&emsp;用信号量机制解决进程同步问题需在程序中正确设置信号量和在适当位置安排P、V操作。例如生产者-消费者问题中，用于互斥进入临界区的P(mutex)、V(mutex)语句需紧靠着临界区前和后，而生产者用于同步的P(empty)和V(full)(消费者为P(full)和V(empty))语句相对临界区就在外面一层，格式如上程序所述。如在以上问题中生产者的P(empty)和P(mutex)先后位置对调，相应消费者的P(full)和P(mutex)先后位置也对调，则生产者和消费者在并发执行时，在某个执行序列会出现问题。<br>
+&emsp;&emsp;下面介绍如何寻找会发生问题的那个执行序列，分析方法用下表表示。表左边是生产者和消费者二进程推进序列，此推进序列需用户寻找；表中间是该操作执行后信号量的变化值，表中间信号量有mutex、empty和full；表的右边是该操作执行后引起进程PCB的队列变化。表中队列有就绪队列RL，因分别等待mutex、empty、full信号量而阻塞的队列QmL、QeL和QfL。<br>
+- 在表中已找到一个推进序列。该序列先执行消费者进程，由于消费者进程交换了P操作，消费者进程在先后执行P(mutex)和P(full)后阻塞在等待full信号量的队列中。这时只能执行生产者进程，由于生产者进程也交换了P操作，在生产者进程执行了P(mutex)操作后，生产者进程阻塞在等待mutex信号量的队列中。这样生产者和消费者两进程可以向前推进，系统进入死锁状态。这说明在生产者-消费者问题中对同步信号量和互斥信号量的二个P操作的顺序是不能颠倒，而对互斥信号量和同步信号量的二个V操作的顺序交换影响不大。
+- 生产者、消费者交换P操作后发生问题的那个执行序列。<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题程序表.JPG)<br>
+2. 利用AND信号量解决生产者-消费者问题<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题程序表.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题AND信号量程序.JPG)<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题AND信号量程序1.JPG)<br>
+
+2. 阅览室管理问题<br>
+阅览室管理问题描述：<br>
+- 阅览室有一批座位，可以坐下若干个同学自习；有一张唯一的登记表，记录空座位数目。
+- 某一同学入室时，查看登记表；如果空座位数目>0，则座位数减1，并进入阅览室做下自习；否则，在阅览室门口等待。
+- 当从阅览室中出来时，使登记表中空座位数加1。<br>
+阅览室管理问题举例：<br>
+- 阅览室中有50个座位(即最多可坐下50位同学自习)，只有一张登记表，欲进入阅览室的同学需先在登记表上登记，然后进入阅览室自习；出门时注销登记。<br>
+进入与出门关系<br>
+- 互斥公用信号量mutex：初值为1，实现临界资源(登记表)互斥使用。
+- 空座位信号量seat：初值为50，只是空座位数目。<br>
+采用信号量的阅览室管理进程描述：<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/阅览室管理问题原语.JPG)<br>
+
+### 2.4.2 哲学家进餐问题 
+
+1. 利用记录型信号量解决哲学家进餐问题<br>
+&emsp;&emsp;经分析可知，放在桌子上的筷子是临界资源，在一段时间内只允许一位哲学家使用。为了实现对筷子的互斥使用，可以用一个信号量表是一只筷子，由这五个信号量构成信号量数组。其描述如下：<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/哲学家进餐问题信号量原语.JPG)<br>
+所有信号量均被初始化为1，第i位哲学家的活动可描述为：<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/哲学家进餐问题活动原语.JPG)<br>
+&emsp;&emsp;可采取以下几种解决方法：<br>
+- 至多只允许有4位哲学家同时去拿左边的筷子，最终能保证至少有一位哲学家能够进餐，并在用毕时能释放出他用过的两只筷子，从而使更多的哲学家能够进餐。
+- 仅当哲学家的左、右两只筷子均可用时，才允许他拿起筷子进餐。
+- 规定奇数号哲学家先拿他左边的筷子，然后再去拿右边的筷子；而偶数号哲学家则相反。按此规定，将是1、2号哲学家竞争1号筷子；3、4号哲学家竞争3号筷子。即五位哲学家都先竞争奇数号筷子，获得后，再去竞争偶数号筷子，最后总会有一位哲学家能获得两只筷子而进餐。<br>
+
+2. 利用AND信号量机制解决哲学家进餐问题<br>
+&emsp;&emsp;在哲学家进餐问题中，要求每个哲学家先获得两个临界资源(筷子)后方能进餐，这在本质上就是前面所介绍的AND同步问题，故用AND信号量机制可获得简洁的解法。<br>
+![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/哲学家进餐问题AND信号量原语.JPG)<br>
+
+### 2.4.3 读者-写者问题
+
+1. 利用记录型信号量解决读者-写者问题<br>
+&emsp;&emsp;
 
 
 
