@@ -330,7 +330,6 @@ C和P两进程并发执行，必须在执行序列上遵循以下规则，才能
 - 生产者、消费者交换P操作后发生问题的那个执行序列。<br>
 ![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题程序表.JPG)<br>
 2. 利用AND信号量解决生产者-消费者问题<br>
-![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题程序表.JPG)<br>
 ![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题AND信号量程序.JPG)<br>
 ![Image text](https://github.com/panhongjin/AndroidLearningPath/raw/master/src/OperatingSystems/assets/生产者-消费者问题AND信号量程序1.JPG)<br>
 
